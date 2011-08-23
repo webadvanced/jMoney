@@ -1,33 +1,16 @@
 
-		API:
-		junit.isTrue(bool)
-		junit.isFalse(bool)
-		junit.equal(expected, result)
-		junit.notEqual(expected, result)
-		junit.nullOrUndefined(val)
-		junit.notNullOrUndefined(val)
-		junit.aNumber(val)
-		junit.notANumber(val)
-		junit.assert(expected, function() {return result})
+	**Note: tests render in console. Best used with FF3+**
+	
+	*API*
+	junit.isTrue(bool)
+	junit.isFalse(bool)
+	junit.equal(expected, result)
+	junit.notEqual(expected, result)
+	junit.nullOrUndefined(val)
+	junit.notNullOrUndefined(val)
+	junit.aNumber(val)
+	junit.notANumber(val)
+	junit.assert(expected, function() {return result})
 
-	var aString = 'Test String';
-	var numberOne = 1;
-	
-	junit.test('aString should be ->  Test String', function(){junit.equal(aString, 'Test String')});
-	junit.test('aString should be -> jUnit Test', 'equal("jUnit Test", aString)');
-	
-	junit.test('var numberOne should be a number', 'aNumber(numberOne)');
-	junit.test('var numberOne should be a string', function() {return junit.notANumber(numberOne)});
-	
-	junit.test('my custom function should be "Hi Paul"', function() {
-		return junit.assert('Hi Paul', function() {return 'Hi Paul'});
-	});
-	
-	var n = null;
-	var u;
-	junit.notNullOrUndefined(n);
-	junit.nullOrUndefined(n);
-	
-	junit.notNullOrUndefined(u);
-	junit.nullOrUndefined(u);
+	**see junit.tests.html for usage**
 	
