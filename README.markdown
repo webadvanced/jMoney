@@ -1,7 +1,6 @@
-
-	**Note: tests render in console. Best used with FF3+**
+**Note: tests render in console. Best used with FF3+**
 	
-	*API*
+*API*
 	junit.isTrue(bool)
 	junit.isFalse(bool)
 	junit.equal(expected, result)
@@ -11,6 +10,5 @@
 	junit.aNumber(val)
 	junit.notANumber(val)
 	junit.assert(expected, function() {return result})
-
-	**see junit.tests.html for usage**
+**see junit.tests.html for usage**
 	
