@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>jUnit Tests</title>
+<script type="text/javascript" src="junit.min.js"></script>
+<script>
+	/*
+		API:
+		junit.equal(expected, result)
+		junit.notEqual(expected, result)
+		junit.nullOrUndefined(val)
+		junit.notNullOrUndefined(val)
+		junit.aNumber(val)
+		junit.notANumber(val)
+		junit.assert(expected, function() {return result})
+	*/
+/*
+	var aString = 'Test String';
+	var numberOne = 1;
+	
+	junit.test('aString should be ->  Test String', function(){junit.equal(aString, 'Test String')});
+	junit.test('aString should be -> jUnit Test', 'equal("jUnit Test", aString)');
+	
+	junit.test('var numberOne should be a number', 'aNumber(numberOne)');
+	junit.test('var numberOne should be a string', function() {return junit.notANumber(numberOne)});
+	
+	junit.test('my custom function should be "Hi Paul"', function() {
+		return junit.assert('Hi Paul', function() {return 'Hi Paul'});
+	});
+	
+	var n = null;
+	var u;
+	junit.notNullOrUndefined(n);
+	junit.nullOrUndefined(n);
+	
+	junit.notNullOrUndefined(u);
+	junit.nullOrUndefined(u);
+	*/
+	
+	/* isTrue */
+	junit.when('Using jUnit.isTrue', function() { 
+		junit.test('should be success when passed true', 'isTrue(true)');
+		junit.test('should be fail when passed false', function() {
+			junit.assert(false, function() {return junit.isTrue(false, 'raw')});
+		});
+	});
+	
+	/* isFalse */
+	junit.when('Using jUnit.isFalse', function() { 
+		junit.test('should be success when passed false', 'isFalse(false)');
+		junit.test('should be fail when passed true', function() {
+			junit.assert(false, function() {return junit.isFalse(true, 'raw')});
+		});
+	});
+	
+	/* equal */
+	junit.when('Using jUnit.equal', function() { 
+		junit.test('should be success when passed matching string values', 'equal("a", "a")');
+		junit.test('should be success when passed matching number values', 'equal(1, 1)');
+		junit.test('should fail when passed mis-matching string values"', function() {
+			return junit.assert(false, function() {return junit.equal('a', 'b', 'raw')});
+		});
+		junit.test('should fail when passed mis-matching number values"', function() {
+			return junit.assert(false, function() {return junit.equal(1, 2, 'raw')});
+		});
+	});
+	
+	/*notEqual*/
+	junit.when('Using jUnit.notEqual', function() { 
+		junit.test('should be success when passed mis-matching strings', 'notEqual("a", "b")');
+		junit.test('should be success when passed mis-matching numbers', 'notEqual(1, 2)');
+		junit.test('should fail when passed matching string values"', function() {
+			return junit.assert(false, function() {return junit.notEqual('a', 'a', 'raw')});
+		});
+		junit.test('should fail when passed matching number values"', function() {
+			return junit.assert(false, function() {return junit.notEqual(1, 1, 'raw')});
+		});
+	});
+	
+	/*nullOrUndefined*/
+	junit.when('Using jUnit.nullOrUndefined', function() { 
+		junit.test('should be success when passed a undefined variable', 'nullOrUndefined()');
+		junit.test('should be success when passed a null variable', 'nullOrUndefined(null)');
+		junit.test('should fail when passed a string', function() {
+			return junit.assert(false, function() {return junit.nullOrUndefined('a', 'raw')});
+		});
+		junit.test('should fail when passed a object', function() {
+			return junit.assert(false, function() {return junit.nullOrUndefined({}, 'raw')});
+		});
+		junit.test('should fail when passed a number', function() {
+			return junit.assert(false, function() {return junit.nullOrUndefined(7, 'raw')});
+		});
+	});
+	
+	/*notNullOrUndefined*/
+	junit.when('Using jUnit.notNullOrUndefined', function() { 
+		var n = null;
+		var u;
+		junit.test('should be success when passed a string', 'notNullOrUndefined("")');
+		junit.test('should be success when passed a number', 'notNullOrUndefined(7)');
+		junit.test('should fail when passed null', function() {
+			return junit.assert(false, function() {return junit.notNullOrUndefined(n, 'raw')});
+		});
+		junit.test('should fail when passed undefined', function() {
+			return junit.assert(false, function() {return junit.notNullOrUndefined(u, 'raw')});
+		});
+	});
+	
+	/* aNumber */
+	junit.when('Using jUnit.aNumber', function() { 
+		junit.test('should be success when passed 7', 'aNumber(7)');
+		junit.test('should be fail when passed a string', function() {
+			junit.assert(false, function() {return junit.aNumber('a string', 'raw')});
+		});
+	});
+	
+	/* notANumber */
+	junit.when('Using jUnit.notANumber', function() { 
+		junit.test('should be success when passed a string', 'notANumber("a string")');
+		junit.test('should be fail when passed 7', function() {
+			junit.assert(false, function() {return junit.notANumber(7, 'raw')});
+		});
+	});
+
+</script>
+</head>
+<body>
+
+</body>
+</html>
