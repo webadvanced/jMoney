@@ -7,7 +7,7 @@
 	/* isTrue */
 	junit.when('Using jUnit.isTrue', function() { 
 		junit.test('should be success when passed true', 'isTrue(true)');
-		junit.test('should be fail when passed false', function() {
+		junit.test('should fail when passed false', function() {
 			junit.assert(false, function() {return junit.isTrue(false, 'raw')});
 		});
 	});
@@ -15,7 +15,7 @@
 	/* isFalse */
 	junit.when('Using jUnit.isFalse', function() { 
 		junit.test('should be success when passed false', 'isFalse(false)');
-		junit.test('should be fail when passed true', function() {
+		junit.test('should fail when passed true', function() {
 			junit.assert(false, function() {return junit.isFalse(true, 'raw')});
 		});
 	});
@@ -76,7 +76,7 @@
 	/* aNumber */
 	junit.when('Using jUnit.aNumber', function() { 
 		junit.test('should be success when passed 7', 'aNumber(7)');
-		junit.test('should be fail when passed a string', function() {
+		junit.test('should fail when passed a string', function() {
 			junit.assert(false, function() {return junit.aNumber('a string', 'raw')});
 		});
 	});
@@ -84,7 +84,7 @@
 	/* notANumber */
 	junit.when('Using jUnit.notANumber', function() { 
 		junit.test('should be success when passed a string', 'notANumber("a string")');
-		junit.test('should be fail when passed 7', function() {
+		junit.test('should fail when passed 7', function() {
 			junit.assert(false, function() {return junit.notANumber(7, 'raw')});
 		});
 	});
