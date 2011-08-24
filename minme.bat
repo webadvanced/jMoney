@@ -1,5 +1,5 @@
 @echo off
-set PATH=%~dp0;%PATH%
-ajaxmin junit.js -o junit.min.js -clobber
+set PATH=lib\
+ajaxmin junit\junit.js -o junit\junit.min.js -clobber
 
 echo ----------------------------------------------
