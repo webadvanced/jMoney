@@ -22,7 +22,7 @@
 	});
 	
 	var returnSeven = function() {
-		return 7
+		return 7;
 	};
 	
 	when.('Using returnSeven', function() {
