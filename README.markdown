@@ -12,7 +12,7 @@
 
 - toMatch(regex)
 
--toBeNumeric()
+- toBeNumeric()
 
 	
 **Simple usage**
