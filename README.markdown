@@ -2,16 +2,21 @@
 	
 **API**
 
-	- toBe(value)
-	- toBeTrue()
-	- toBeNull()
-	- toBeUndefined()
-	- toMatch(regex)
-	-toBeNumeric()
+- toBe(value)
+
+- toBeTrue()
+
+- toBeNull()
+
+- toBeUndefined()
+
+- toMatch(regex)
+
+-toBeNumeric()
 
 	
-	*Simple usage*
+*Simple usage*
 	
-		when.('Testing numbers', function() {
+	when.('Testing numbers', function() {
 			spec('7 should be numberic').expect(7).toBeNumeric();
-		});
+	});
