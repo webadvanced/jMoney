@@ -15,7 +15,7 @@
 -toBeNumeric()
 
 	
-*Simple usage*
+**Simple usage**
 	
 	when.('Using numbers', function() {
 			spec('7 should be numberic').expect(7).toBeNumeric();
