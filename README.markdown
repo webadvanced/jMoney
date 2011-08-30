@@ -2,16 +2,16 @@
 	
 **API**
 
-	- junit.isTrue(bool)
-	- junit.isFalse(bool)
-	- junit.equal(expected, result)
-	- junit.notEqual(expected, result)
-	- junit.nullOrUndefined(val)
-	- junit.notNullOrUndefined(val)
-	- junit.aNumber(val)
-	- junit.notANumber(val)
-	- junit.assert(expected, function() {return result})
+	- toBe(value)
+	- toBeTrue()
+	- toBeNull()
+	- toBeUndefined()
+	- toMatch(regex)
+	-toBeNumeric()
 
-
-	*see junit.tests.html for usage*
 	
+	*Simple usage*
+	
+		when.('Testing numbers', function() {
+			spec('7 should be numberic').expect(7).toBeNumeric();
+		});

@@ -5,112 +5,254 @@ String.prototype.formatWith = function () {
     }
     return r;
 };
+(function (global) {
 
-(function (global, undefined) {
-    var junit = { }, canLog = (typeof global.console === 'object'), TestResult, predicate;
-    junit.console = {
+    var jn = { };
+    jn.undefined = jn.__undefined__;
+    jn.canLog = (typeof global.console === 'object');
+    jn.console = {
         log: function (str) {
-            if (canLog) { global.console.log(str); }
+            if (jn.canLog) {
+                global.console.log(str);
+            }
         },
         success: function (str) {
-            if (canLog) { global.console.log('%c{0}'.formatWith(str), 'color:green'); }
+            if (jn.canLog) {
+                global.console.log('%c{0}'.formatWith(str), 'color:green');
+            }
         },
         fail: function (str) {
-            if (canLog) { global.console.log('%c{0}'.formatWith(str), 'color:red'); }
+            if (jn.canLog) {
+                global.console.log('%c{0}'.formatWith(str), 'color:red');
+            }
         },
         group: function (str) {
-            if (canLog) { global.console.group(str); }
+            if (jn.canLog) {
+                global.console.group(str);
+            }
         },
         groupEnd: function () {
-            if (canLog) { global.console.groupEnd(); }
-        }			
+            if (jn.canLog) {
+                global.console.groupEnd();
+            }
+        },
+        info: function (str) {
+            if (jn.canLog) {
+                global.console.info(str);
+            }
+        }
     };
-   
-    predicate = function (fn) {
-		var message = { success: '      - Success', fail: '      - Fail: Expected "{0}" but was "{1}"'.formatWith(arguments[1], arguments[2]) };
-        if (fn()) {
-			junit.console.success(message.success);
-		} else {
-			junit.console.fail(message.fail);
-		}
+
+    jn.util = { };
+    jn.util.inherit = function (childClass, parentClass) {
+        var Subclass = function () {
+        };
+        Subclass.prototype = parentClass.prototype;
+        childClass.prototype = new Subclass();
     };
-	
-    TestResult = function (fn, p1, p2) {
-        this.fn = fn;
-        this.param_1 = p1;
-        this.param_2 = p2;
-        this.get = function (args) {
-            if (args[args.length - 1] === 'raw') { return this.fn(); }
-            predicate(this.fn, this.param_1, this.param_2);
+    jn.util.argsToArray = function (args) {
+        var arrayOfArgs = [], i = 0;
+        for (i; i < args.length; i++) {
+            arrayOfArgs.push(args[i]);
+        }
+        return arrayOfArgs;
+    };
+
+    jn.Guts = function () {
+        this.specGroups = [];
+        this.currentSpecGroup = null;
+
+        // wrap predicates
+        this.predicateClass = function () {
+            jn.Predicates.apply(this, arguments);
+        };
+        jn.util.inherit(this.predicateClass, jn.Predicates);
+        jn.Predicates.wrapInto_(jn.Predicates.prototype, this.predicateClass);
+    };
+
+    jn.Guts.prototype.getCurrentSpecGroup = function () {
+        return this.currentSpecGroup;
+    };
+
+    jn.getGuts = function () {
+        var g = jn.currentGuts = jn.currentGuts || new jn.Guts();
+        return g;
+    };
+
+    global.when = function (description, func) {
+        var specGroup = new jn.SpecGroup(description, func);
+        jn.getGuts().specGroups.push(specGroup);
+        jn.getGuts().currentSpecGroup = specGroup;
+        specGroup.runSpecs();
+    };
+
+    global.spec = function (name) {
+        var spec = new jn.Spec(name), currentSpecGroup;
+        currentSpecGroup = jn.getGuts().getCurrentSpecGroup();
+        currentSpecGroup.specs.push(spec);
+        currentSpecGroup.currentSpec = spec;
+        return this;
+    };
+
+    global.expect = function (actualResult) {
+        var spec = jn.getGuts().getCurrentSpecGroup().getCurrentSpec();
+        return spec.expect(actualResult);
+    };
+
+    jn.SpecGroup = function (description, func) {
+        //needs to have an array of specs
+        this.description = description;
+        this.specs = [];
+        this.func = func;
+        this.currentSpec = null;
+    };
+
+    jn.SpecGroup.prototype.runSpecs = function () {
+        this.func();
+        jn.processSpecGroup(this);
+    };
+
+    jn.SpecGroup.prototype.getCurrentSpec = function () {
+        return this.currentSpec;
+    };
+
+    jn.processSpecGroup = function (specGroup) {
+        var i = 0, specs = specGroup.specs, writeMessage, passed = 0, faild = 0, spec;
+        writeMessage = function (result, exeTime) {
+            jn.console[result.logType]('{0}  -> ({1}ms)'.formatWith(result.message, exeTime));
+            if (result.logType === 'fail') {
+                faild++;
+            } else {
+                passed++;
+            }
+        };
+        jn.console.group(specGroup.description);
+        for (i; i < specs.length; i++) {
+            spec = specs[i];
+            writeMessage(spec.result, spec.exeTime);
+        }
+        jn.console.info('Passed: {0}   Failed: {1}'.formatWith(passed, faild));
+        jn.console.groupEnd();
+    };
+
+    jn.Spec = function (name) {
+        //needs to have a spec group
+        this.name = name;
+        this.result = null;
+        this.expected = null;
+        this.actual = null;
+        this.isNot = false;
+        this.exeTime = 0;
+    };
+
+    jn.Spec.prototype.not = function () {
+        this.isNot = true;
+        return this;
+    };
+
+    jn.Spec.prototype.getPredicatesClass = function () {
+        return jn.getGuts().predicateClass;
+    };
+
+    jn.Spec.prototype.setSpecResult = function (specResult) {
+        this.result = specResult;
+    };
+
+    jn.Spec.prototype.expect = function (actual) {
+        var guts = jn.getGuts(), pro, methodName;
+        pro = this.getPredicatesClass().prototype;
+        for (methodName in pro) {
+            jn.Spec.prototype[methodName] = pro[methodName];
+        }
+        jn.Predicates.apply(this, [guts, actual, this, false]);
+        return this;
+    };
+
+    jn.SpecResult = function (logType, message) {
+        this.logType = logType;
+        this.message = message;
+    };
+
+    jn.Predicates = function (guts, actual, spec, optIsNot) {
+        this.isNot = optIsNot;
+        this.guts = guts;
+        this.actual = actual;
+        this.spec = spec;
+    };
+
+    jn.Predicates.wrapInto_ = function (prototype, predicateClass) {
+        var methodName, orig;
+        for (methodName in prototype) {
+            orig = prototype[methodName];
+            predicateClass.prototype[methodName] = jn.Predicates.predicateFn_(methodName, orig);
+        }
+    };
+
+    jn.Predicates.predicateFn_ = function (predicateName, predicateFunction) {
+        return function () {
+            var predicateArgs = jn.util.argsToArray(arguments), start, result, end, exeTime, message, logType, expMessage, specResult;
+            start = new Date().getTime();
+            if (typeof this.actual === 'function') {
+                this.actual = this.actual();
+                arguments[0] = this.actual;
+            }
+            result = predicateFunction.apply(this, arguments);
+            end = new Date().getTime();
+            exeTime = (end - start);
+            this.exeTime = (exeTime === 0) ? 1 : exeTime;
+            if (this.isNot) {
+                result = !result;
+            }
+            if (result) {
+                //success
+                message = '    - Passed';
+                logType = 'success';
+            } else {
+                //fail
+                expMessage = (this.isNot) ? 'but was not' : 'but was';
+                message = '    - Fail: expected "{0}" {1} "{2}"'.formatWith(this.expected, expMessage, this.actual);
+                logType = 'fail';
+            }
+
+            specResult = new jn.SpecResult(logType, message);
+            this.spec.setSpecResult(specResult);
         };
     };
-
-    junit.when = function (ctx, funcs) {
-
-        junit.console.group('*** When {0} =>'.formatWith(ctx));
-        funcs();
-        junit.console.groupEnd();
-    };
-    
-    junit.isTrue = function (p1) {
-        var trueResult = new TestResult(function () { return p1 === true; }, p1, true);
-        return trueResult.get(arguments);
+    /*
+    * List of  preticates
+    */
+    jn.Predicates.prototype.toBe = function (expected) {
+        this.expected = expected;
+        return expected === this.actual;
     };
 
-    junit.isFalse = function (p1) {
-        var falseResult = new TestResult(function () { return p1 === false; }, p1, false);
-        return falseResult.get(arguments);
+    jn.Predicates.prototype.toMatch = function (expected) {
+        this.expected = expected;
+        return (new RegExp(expected).test(this.actual));
     };
 
-    junit.equal = function (p1, p2) {
-        var equalResult = new TestResult(function () { return p1 === p2; }, p1, p2);
-        return equalResult.get(arguments);
+    jn.Predicates.prototype.toBeUndefined = function () {
+        this.expected = 'undefined';
+        return this.actual === jn.undefined;
     };
 
-    junit.notEqual = function (p1, p2) {
-        var notEqualResult = new TestResult(function () { return p1 !== p2; }, p1, p2);
-        return notEqualResult.get(arguments);
+    jn.Predicates.prototype.toBeNull = function () {
+        this.expected = 'null';
+        return this.actual === null;
     };
 
-    junit.nullOrUndefined = function (p1) {
-        var nullOrUndefinedResult = new TestResult(function () { return p1 === null || typeof p1 === 'undefined'; }, 'null or undefined', p1);
-        return nullOrUndefinedResult.get(arguments);
+    jn.Predicates.prototype.toBeTrue = function () {
+        this.expected = 'true';
+        return this.actual === true;
     };
 
-    junit.notNullOrUndefined = function (p1) {
-        var notNullOrUndefinedResult = new TestResult(function () { return typeof p1 !== 'undefined' && p1 !== null; }, 'not null or undefined', p1);
-        return notNullOrUndefinedResult.get(arguments);
+    jn.Predicates.prototype.toBeNumeric = function () {
+        var t = typeof this.actual, message;
+        message = 'number (type: ' + t + ')';
+        this.expected = message;
+        return (this.actual !== null && this.actual !== jn.undefined && t !== 'string' && !isNaN(this.actual));
     };
 
-    junit.aNumber = function (p1) {
-        var aNumberResult = new TestResult(function () { return typeof p1 === 'number' && !isNaN(global.parseFloat(p1)); }, 'a number', "{0} - type is {1}".formatWith(p1, typeof p1));
-        return aNumberResult.get(arguments);
-    };
-
-    junit.notANumber = function (p1) {
-        var notANumberResult = new TestResult(function () { return typeof p1 !== 'number' || isNaN(global.parseFloat(p1)); }, 'not a number', "{0} - type is {1}".formatWith(p1, typeof p1));
-        return notANumberResult.get(arguments);
-    };
-
-    junit.assert = function (expected, fn) {
-        var result = fn();
-        if (result === expected) {
-            junit.console.success('      - Success');
-		} else {
-            junit.console.fail('      - Fail: Expected "{0}" but was "{1}"'.formatWith(expected, result));
-		}
-    };
-
-    if (global.junit === undefined) { global.junit = junit; }
-
-    junit.test = function (testName, fn) {
-        junit.console.log('    * {0} ->'.formatWith(testName));
-        if (typeof fn === 'string') {
-            if (fn.indexOf('junit') === -1) { fn = 'junit.{0}'.formatWith(fn); }
-            eval(fn);
-        } else {
-            fn();
-        }
-
-    };
-})(window);
+    //for testing only
+    global.jn = jn;
+})(typeof window === 'undefined' ? this : window);

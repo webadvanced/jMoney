@@ -4,91 +4,102 @@
 <title>jUnit Tests</title>
 <script type="text/javascript" src="jUnit/junit.min.js"></script>
 <script>
-	/* isTrue */
-	junit.when('Using jUnit.isTrue', function() { 
-		junit.test('should be success when passed true', 'isTrue(true)');
-		junit.test('should fail when passed false', function() {
-			junit.assert(false, function() {return junit.isTrue(false, 'raw')});
-		});
-	});
-	
-	/* isFalse */
-	junit.when('Using jUnit.isFalse', function() { 
-		junit.test('should be success when passed false', 'isFalse(false)');
-		junit.test('should fail when passed true', function() {
-			junit.assert(false, function() {return junit.isFalse(true, 'raw')});
-		});
-	});
-	
-	/* equal */
-	junit.when('Using jUnit.equal', function() { 
-		junit.test('should be success when passed matching string values', 'equal("a", "a")');
-		junit.test('should be success when passed matching number values', 'equal(1, 1)');
-		junit.test('should fail when passed mis-matching string values"', function() {
-			return junit.assert(false, function() {return junit.equal('a', 'b', 'raw')});
-		});
-		junit.test('should fail when passed mis-matching number values"', function() {
-			return junit.assert(false, function() {return junit.equal(1, 2, 'raw')});
-		});
-	});
-	
-	/*notEqual*/
-	junit.when('Using jUnit.notEqual', function() { 
-		junit.test('should be success when passed mis-matching strings', 'notEqual("a", "b")');
-		junit.test('should be success when passed mis-matching numbers', 'notEqual(1, 2)');
-		junit.test('should fail when passed matching string values"', function() {
-			return junit.assert(false, function() {return junit.notEqual('a', 'a', 'raw')});
-		});
-		junit.test('should fail when passed matching number values"', function() {
-			return junit.assert(false, function() {return junit.notEqual(1, 1, 'raw')});
-		});
-	});
-	
-	/*nullOrUndefined*/
-	junit.when('Using jUnit.nullOrUndefined', function() { 
-		junit.test('should be success when passed a undefined variable', 'nullOrUndefined()');
-		junit.test('should be success when passed a null variable', 'nullOrUndefined(null)');
-		junit.test('should fail when passed a string', function() {
-			return junit.assert(false, function() {return junit.nullOrUndefined('a', 'raw')});
-		});
-		junit.test('should fail when passed a object', function() {
-			return junit.assert(false, function() {return junit.nullOrUndefined({}, 'raw')});
-		});
-		junit.test('should fail when passed a number', function() {
-			return junit.assert(false, function() {return junit.nullOrUndefined(7, 'raw')});
-		});
-	});
-	
-	/*notNullOrUndefined*/
-	junit.when('Using jUnit.notNullOrUndefined', function() { 
-		var n = null;
-		var u;
-		junit.test('should be success when passed a string', 'notNullOrUndefined("")');
-		junit.test('should be success when passed a number', 'notNullOrUndefined(7)');
-		junit.test('should fail when passed null', function() {
-			return junit.assert(false, function() {return junit.notNullOrUndefined(n, 'raw')});
-		});
-		junit.test('should fail when passed undefined', function() {
-			return junit.assert(false, function() {return junit.notNullOrUndefined(u, 'raw')});
-		});
-	});
-	
-	/* aNumber */
-	junit.when('Using jUnit.aNumber', function() { 
-		junit.test('should be success when passed 7', 'aNumber(7)');
-		junit.test('should fail when passed a string', function() {
-			junit.assert(false, function() {return junit.aNumber('a string', 'raw')});
-		});
-	});
-	
-	/* notANumber */
-	junit.when('Using jUnit.notANumber', function() { 
-		junit.test('should be success when passed a string', 'notANumber("a string")');
-		junit.test('should fail when passed 7', function() {
-			junit.assert(false, function() {return junit.notANumber(7, 'raw')});
-		});
-	});
 
+	/* toBeTrue */
+	when('Using jn.Predicates.toBeTrue', function() { 
+		spec('should be true when passed true').expect(function() {
+			var p = new jn.Predicates(null, true, null, false);
+			return p.toBeTrue() === true;
+		}).toBeTrue();
+		spec('should fail when passed false').expect(function() {
+			var p = new jn.Predicates(null, false, null, false);
+			return p.toBeTrue() === false;
+		}).toBeTrue();
+	});
+	
+	/* not().toBeTrue */
+	when('Using jn.Predicates.not().toBeTrue', function() { 
+		spec('should fail when passed false').expect(function() {
+			var p = new jn.Predicates(null, true, null, true);
+			return p.toBeTrue() === true;
+		}).toBeTrue();
+		spec('should pass when pass false').expect(function() {
+			var p = new jn.Predicates(null, false, null, true);
+			return p.toBeTrue() === false;
+		}).toBeTrue();
+	});
+	
+	/* toBe */
+	when('Using jn.toBe', function() { 
+		spec('should be success when passed matching string values').expect(function() {
+			var p = new jn.Predicates(null, 'my string', null, false);
+			return p.toBe('my string');
+		}).toBeTrue();
+		spec('should be success when passed matching number values').expect(function() {
+			var p = new jn.Predicates(null, 7, null, false);
+			return p.toBe(7);
+		}).toBeTrue();
+		spec('should fail when passed mis-matching string values').expect(function() {
+			var p = new jn.Predicates(null, 'foo', null, false);
+			return p.toBe('bar');
+		}).not().toBeTrue();
+		spec('should fail when passed mis-matching number values').expect(function() {
+			var p = new jn.Predicates(null, 25, null, false);
+			return p.toBe(7);
+		}).not().toBeTrue();
+	});
+	
+	/*toBeNull*/
+	when('Using jn.toBeNull', function() { 
+		spec('should be success when passed a null variable').expect(function() {
+			var p = new jn.Predicates(null, null, null, false);
+			return p.toBeNull();
+		}).toBeTrue();
+		spec('should fail when passed a string').expect(function() {
+			var p = new jn.Predicates(null, 'a string', null, false);
+			return p.toBeNull();
+		}).not().toBeTrue();
+		spec('should fail when passed a number').expect(function() {
+			var p = new jn.Predicates(null, 8, null, false);
+			return p.toBeNull();
+		}).not().toBeTrue();
+		spec('should fail when passed a object').expect(function() {
+			var p = new jn.Predicates(null, {}, null, false);
+			return p.toBeNull();
+		}).not().toBeTrue();
+	});
+	/*toBeUndefined*/
+	when('Using jn.toBeUndefined', function() { 
+		spec('should be success when passed a undefined variable').expect(function() {
+			var u;
+			var p = new jn.Predicates(null, u, null, false);
+			return p.toBeUndefined();
+		}).toBeTrue();
+		spec('should fail when passed a string').expect(function() {
+			var p = new jn.Predicates(null, 'a string', null, false);
+			return p.toBeUndefined();
+		}).not().toBeTrue();
+		spec('should fail when passed a number').expect(function() {
+			var p = new jn.Predicates(null, 8, null, false);
+			return p.toBeUndefined();
+		}).not().toBeTrue();
+		spec('should fail when passed a object').expect(function() {
+			var p = new jn.Predicates(null, {}, null, false);
+			return p.toBeUndefined();
+		}).not().toBeTrue();
+	});
+	/*toBeNumeric*/
+	when('Using jn.Predicates.toBeNumeric', function() { 
+		spec('should be true when passed a number').expect(function() {
+			var p = new jn.Predicates(null, 7, null, false);
+			return p.toBeNumeric();
+		}).toBeTrue();
+		spec('should fail when passed a string').expect(function() {
+			var p = new jn.Predicates(null, '7', null, false);
+			return p.toBeNumeric();
+		}).not().toBeTrue();
+	});
+	
 </script>
 </head>
 <body>
