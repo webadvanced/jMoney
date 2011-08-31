@@ -162,7 +162,9 @@ String.prototype.formatWith = function () {
         var guts = jn.getGuts(), pro, methodName;
         pro = this.getPredicatesClass().prototype;
         for (methodName in pro) {
-            jn.Spec.prototype[methodName] = pro[methodName];
+			if (pro.hasOwnProperty(methodName) {
+				jn.Spec.prototype[methodName] = pro[methodName];
+			}
         }
         jn.Predicates.apply(this, [guts, actual, this, false]);
         return this;
@@ -183,8 +185,10 @@ String.prototype.formatWith = function () {
     jn.Predicates.wrapInto_ = function (prototype, predicateClass) {
         var methodName, orig;
         for (methodName in prototype) {
-            orig = prototype[methodName];
-            predicateClass.prototype[methodName] = jn.Predicates.predicateFn_(methodName, orig);
+			if (prototype.hasOwnProperty(methodName)) {
+				orig = prototype[methodName];
+				predicateClass.prototype[methodName] = jn.Predicates.predicateFn_(methodName, orig);
+			}
         }
     };
 
