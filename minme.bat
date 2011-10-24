@@ -1,5 +1,5 @@
 @echo off
 set PATH=lib\
-ajaxmin junit\junit.js -o junit\junit.min.js -clobber
+ajaxmin jmoney\jmoney.js -o jmoney\jmoney.min.js -clobber
 
 echo ----------------------------------------------
