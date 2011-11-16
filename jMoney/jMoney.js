@@ -1,45 +1,36 @@
-String.prototype.formatWith = function () {
-    var r = this, i = 0, l = arguments.length;
-    for (i; i < l; i++) {
-        r = r.replace('{' + i + '}', arguments[i]);
-    }
-    return r;
-};
-(function (global) {
+(function (String) {
+	"use strict";
+	String.prototype.formatWith = function () {
+		var r = this, i = 0, l = arguments.length;
+		for (i; i < l; i += 1) {
+			r = r.replace('{' + i + '}', arguments[i]);
+		}
+		return r;
+	};
+}(String));
 
-    var jn = { };
-    jn.undefined = jn.__undefined__;
-    jn.canLog = (typeof global.console === 'object');
+(function (global) {
+	var jn = { }, u;
+    jn.undefinedd = u;
+    jn.canLog = (typeof global.console !== jn.undefinedd);
     jn.console = {
         log: function (str) {
-            if (jn.canLog) {
-                global.console.log(str);
-            }
+            jn.util.logIt(function () { global.console.log(str); });
         },
         success: function (str) {
-            if (jn.canLog) {
-                global.console.log('%c{0}'.formatWith(str), 'color:green');
-            }
+            jn.util.logIt(function () { global.console.log('%c{0}'.formatWith(str), 'color:green'); });
         },
         fail: function (str) {
-            if (jn.canLog) {
-                global.console.log('%c{0}'.formatWith(str), 'color:red');
-            }
+            jn.util.logIt(function () { global.console.log('%c{0}'.formatWith(str), 'color:red'); });
         },
         group: function (str) {
-            if (jn.canLog) {
-                global.console.group(str);
-            }
+            jn.util.logIt(function () { global.console.group(str); });
         },
         groupEnd: function () {
-            if (jn.canLog) {
-                global.console.groupEnd();
-            }
+            jn.util.logIt(function () { global.console.groupEnd(); });
         },
         info: function (str) {
-            if (jn.canLog) {
-                global.console.info(str);
-            }
+            jn.util.logIt(function () { global.console.info(str); });
         }
     };
 
@@ -52,11 +43,16 @@ String.prototype.formatWith = function () {
     };
     jn.util.argsToArray = function (args) {
         var arrayOfArgs = [], i = 0;
-        for (i; i < args.length; i++) {
+        for (i; i < args.length; i += 1) {
             arrayOfArgs.push(args[i]);
         }
         return arrayOfArgs;
     };
+	jn.util.logIt = function (fn) {
+		if (jn.canLog) {
+			fn();
+		}
+	};
 
     jn.Guts = function () {
         this.specGroups = [];
@@ -121,13 +117,13 @@ String.prototype.formatWith = function () {
         writeMessage = function (result, exeTime) {
             jn.console[result.logType]('{0}  -> ({1}ms)'.formatWith(result.message, exeTime));
             if (result.logType === 'fail') {
-                faild++;
+                faild += 1;
             } else {
-                passed++;
+                passed += 1;
             }
         };
         jn.console.group(specGroup.description);
-        for (i; i < specs.length; i++) {
+        for (i; i < specs.length; i += 1) {
             spec = specs[i];
             writeMessage(spec.result, spec.exeTime);
         }
@@ -162,7 +158,7 @@ String.prototype.formatWith = function () {
         var guts = jn.getGuts(), pro, methodName;
         pro = this.getPredicatesClass().prototype;
         for (methodName in pro) {
-			if (pro.hasOwnProperty(methodName) {
+			if (pro.hasOwnProperty(methodName)) {
 				jn.Spec.prototype[methodName] = pro[methodName];
 			}
         }
@@ -198,9 +194,9 @@ String.prototype.formatWith = function () {
             start = new Date().getTime();
             if (typeof this.actual === 'function') {
                 this.actual = this.actual();
-                arguments[0] = this.actual;
+				predicateArgs.push(this.actual);
             }
-            result = predicateFunction.apply(this, arguments);
+            result = predicateFunction.apply(this, predicateArgs);
             end = new Date().getTime();
             exeTime = (end - start);
             this.exeTime = (exeTime === 0) ? 1 : exeTime;
@@ -236,8 +232,9 @@ String.prototype.formatWith = function () {
     };
 
     jn.Predicates.prototype.toBeUndefined = function () {
-        this.expected = 'undefined';
-        return this.actual === jn.undefined;
+        var u;
+		this.expected = 'undefined';
+        return this.actual === jn.undefinedd;
     };
 
     jn.Predicates.prototype.toBeNull = function () {
@@ -254,9 +251,9 @@ String.prototype.formatWith = function () {
         var t = typeof this.actual, message;
         message = 'number (type: ' + t + ')';
         this.expected = message;
-        return (this.actual !== null && this.actual !== jn.undefined && t !== 'string' && !isNaN(this.actual));
+        return (this.actual !== null && this.actual !== jn.undefinedd && t !== 'string' && !isNaN(this.actual));
     };
 
     //for testing only
     global.jn = jn;
-})(typeof window === 'undefined' ? this : window);
+}(this));
