@@ -256,4 +256,4 @@
 
     //for testing only
     global.jn = jn;
-}(this));
+}(window));
