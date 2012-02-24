@@ -122,7 +122,7 @@
                 passed += 1;
             }
         };
-        jn.console.group(specGroup.description);
+        jn.console.group('When ' + specGroup.description);
         for (i; i < specs.length; i += 1) {
             spec = specs[i];
             writeMessage(spec.result, spec.exeTime);
@@ -214,7 +214,7 @@
                 logType = 'fail';
             }
 
-            specResult = new jn.SpecResult(logType, message);
+            specResult = new jn.SpecResult(logType, '    it ' + this.name + '\n' + message);
             this.spec.setSpecResult(specResult);
         };
     };
