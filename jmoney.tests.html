@@ -4,12 +4,11 @@
 <title>jUnit Tests</title>
 <script type="text/javascript" src="jMoney/jmoney.min.js"></script>
 <script>
-
 	/* toBeTrue */
 	when('Using jn.Predicates.toBeTrue', function() { 
 		spec('should be true when passed true').expect(function() {
 			var p = new jn.Predicates(null, true, null, false);
-			return p.toBeTrue() === false;
+			return p.toBeTrue() === true;
 		}).toBeTrue();
 		spec('should fail when passed false').expect(function() {
 			var p = new jn.Predicates(null, false, null, false);

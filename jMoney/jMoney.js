@@ -253,7 +253,8 @@
         this.expected = message;
         return (this.actual !== null && this.actual !== jn.undefinedd && t !== 'string' && !isNaN(this.actual));
     };
-
+    //Alias for jn.Predicates.prototype
+    jn.Predicates.fn = jn.Predicates.prototype;
     //for testing only
     global.jn = jn;
 }(window));
