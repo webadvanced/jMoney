@@ -43,8 +43,8 @@ when('Using anonymous functions', function() {
 
 ```javascript
 jn.Predicates.fn.toBeFoo = function(expected) {
-	//expected can either be passed in as en argument i.e toBeFoo('this is the expected value');
-	//Or can be explisitly set like so:
+	//expected can either be passed in as an argument i.e toBeFoo('this is the expected value');
+	//Or can be explicitly set like so:
 	this.expected = 'foo';
 	return this.expected === this.actual; //this.actual is the returned value from the expect function
 };
