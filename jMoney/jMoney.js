@@ -48,9 +48,9 @@
         }
         return arrayOfArgs;
     };
-	jn.util.logIt = function (fn) {
+	jn.util.logIt = function (func) {
 		if (jn.canLog) {
-			fn();
+			func();
 		}
 	};
 
