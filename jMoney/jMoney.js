@@ -233,18 +233,18 @@
 
     jn.Predicates.prototype.toBeUndefined = function () {
         var u;
-		this.expected = 'undefined';
-        return this.actual === jn.undefinedd;
+		this.expected = u;
+        return this.actual === this.expected;
     };
 
     jn.Predicates.prototype.toBeNull = function () {
-        this.expected = 'null';
-        return this.actual === null;
+        this.expected = null;
+        return this.actual === this.expected;
     };
 
     jn.Predicates.prototype.toBeTrue = function () {
-        this.expected = 'true';
-        return this.actual === true;
+        this.expected = true;
+        return this.actual === this.expected;
     };
 
     jn.Predicates.prototype.toBeNumeric = function () {
