@@ -257,4 +257,4 @@
     jn.Predicates.fn = jn.Predicates.prototype;
     //for testing only
     global.jn = jn;
-}(window));
+}(window || this));
