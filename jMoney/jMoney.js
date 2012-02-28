@@ -64,6 +64,8 @@
         };
         jn.util.inherit(this.predicateClass, jn.Predicates);
         jn.Predicates.wrapInto_(jn.Predicates.prototype, this.predicateClass);
+        this.totalPassed = 0;
+        this.totalFaild = 0;
     };
 
     jn.Guts.prototype.getCurrentSpecGroup = function () {
@@ -94,6 +96,15 @@
         var spec = jn.getGuts().getCurrentSpecGroup().getCurrentSpec();
         return spec.expect(actualResult);
     };
+    
+    global.printSummary = function() {
+        var guts = jn.getGuts();
+        jn.console.group('Specs Summary');
+        jn.console.log('-');
+        jn.console.info('Passed: {0}   Failed: {1}'.formatWith(guts.totalPassed, guts.totalFaild));
+        jn.console.log('-');
+        jn.console.groupEnd();
+    };
 
     jn.SpecGroup = function (description, func) {
         //needs to have an array of specs
@@ -113,7 +124,7 @@
     };
 
     jn.processSpecGroup = function (specGroup) {
-        var i = 0, specs = specGroup.specs, writeMessage, passed = 0, faild = 0, spec;
+        var i = 0, specs = specGroup.specs, writeMessage, passed = 0, faild = 0, spec, guts;
         writeMessage = function (result, exeTime) {
             jn.console[result.logType]('{0}  -> ({1}ms)'.formatWith(result.message, exeTime));
             if (result.logType === 'fail') {
@@ -129,6 +140,9 @@
         }
         jn.console.info('Passed: {0}   Failed: {1}'.formatWith(passed, faild));
         jn.console.groupEnd();
+        guts = jn.getGuts();
+        guts.totalFaild += faild;
+        guts.totalPassed += passed;
     };
 
     jn.Spec = function (name) {
