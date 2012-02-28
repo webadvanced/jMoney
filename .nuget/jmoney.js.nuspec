@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>jMoney.js</id> 
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 	<title>jMoney Simple JavaScript Spec(Test) Framework</title>
     <authors>Web Advanced</authors>
     <description>jMoney.js is a light weight pure JavaScript spec(test) framework. jMoney is great for prototyping JavaScript and very easy to use. All specs(tests) results render in the console so there is no need to set anything up, just add a reference to the file and start testing.</description> 
