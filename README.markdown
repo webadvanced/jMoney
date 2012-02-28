@@ -37,6 +37,8 @@ when('Using anonymous functions', function() {
 		return 7;
 	}).toBe(7);
 }):
+
+printSummary();
 ```
 
 **Creating your own matcher (predicate)**
