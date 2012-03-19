@@ -14,7 +14,7 @@
 
 - toBeNumeric()
 
-*.not()* can be prepended to and matcher.
+*.not()* can be prepended to any matcher.
 
 ```javascript
 .not().toBeTrue()
